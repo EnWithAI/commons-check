@@ -1,7 +1,7 @@
 # Release readiness — Commons Check 0.1.0
 
-Date: 2026-10-28 · Branch `main` (local only) · **Verdict: READY FOR HUMAN REVIEW**. It is not on GitHub or npm.
-Creating the repository, pushing and publishing each need explicit approval (PHASE_GATES).
+Date: 2026-10-28 · Branch `release/v0.1.0` · **Verdict: READY FOR HUMAN REVIEW**. On GitHub (EnWithAI/commons-check).
+The npm release of 0.1.0 was requested by the user on 2026-10-28; the user publishes with 2FA.
 
 ## Verified (2026-10-28, macOS, Node v25.9.0)
 
