@@ -5,7 +5,7 @@ versions may change the summary format, which carries its own `schema_version`).
 
 ## Unreleased
 
-## 0.1.0 — unreleased
+## 0.1.0 — 2026-10-28
 
 First version. Runs Spec Check 0.2.0, Impact Check 0.3.0 (with its module graph), Architecture Check 0.2.0, Outcome
 Check 0.1.0 (with exported PR data) and Product Check 0.2.0 on a repository with one command. It calls them
@@ -15,4 +15,6 @@ in-process, wires each report into the next, and writes `SUMMARY.md` and `common
   `no-model` with its reason, and the other steps continue. `--fail-on-error` exits 4 when a step errored.
 - The summary keeps facts, hypotheses and unknowns apart. "What to do first" lists only facts: Product Check P0/P1,
   then verified high and medium findings. NOT_TESTED and BLOCKED controls are listed with their reasons.
-- GitHub Action (`action.yml`), report only by default.
+- GitHub Action (`action.yml`), report only by default. Verified on a GitHub runner from a clean install.
+- The documented PR export leaves out `commits`. With it, GitHub's GraphQL node limit is exceeded above about 30
+  PRs per call.
