@@ -49,3 +49,13 @@ describe("GitHub Action", () => {
     }
   });
 });
+
+describe("action.yml", () => {
+  it("has no expressions outside `value:` and `env:`/`with:` blocks (GitHub evaluates them in descriptions too)", () => {
+    const text = readFileSync(new URL("../action.yml", import.meta.url), "utf8");
+    const offending = text
+      .split("\n")
+      .filter((line) => line.includes("${{") && !/^\s*(value:|INPUT_[A-Z_]+:)/.test(line));
+    expect(offending).toEqual([]);
+  });
+});
