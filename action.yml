@@ -1,0 +1,85 @@
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2026 EnWithAI Technologies
+# Commons Check composite GitHub Action: runs the five Engineering Commons tools on the checked-out repository,
+# writes every report to an output directory and the summary to the job summary. Security model in docs/ACTION.md.
+
+name: "Engineering Commons check"
+description: "Runs Spec Check, Impact Check, Architecture Check, Outcome Check and Product Check in one step and summarizes them. Offline, in-process, report only."
+author: "EnWithAI Technologies"
+branding:
+  icon: "check-square"
+  color: "blue"
+
+# Security model (see docs/ACTION.md):
+# - Use on `pull_request` with `permissions: contents: read`. Do not use `pull_request_target`.
+# - Check out with `fetch-depth: 0` so Impact Check can compare with the base branch.
+# - The runtime dependencies (the five tools) are installed from the pinned lockfile with
+#   `npm ci --omit=dev --ignore-scripts` (this step contacts the npm registry); the checks make no network access.
+# - Inputs are passed through environment variables, never interpolated into shell code.
+inputs:
+  working-directory:
+    description: "Repository root, relative to the workspace."
+    required: false
+    default: "."
+  stage:
+    description: "Product Check lifecycle stage (ALPHA, BETA_PILOT, PRE_LAUNCH, LAUNCH_GATE, JUST_LAUNCHED, POST_LAUNCH, PRODUCTION_SCALE, MAJOR_CHANGE)."
+    required: false
+    default: "ALPHA"
+  base:
+    description: "Impact Check base ref. Default: main, origin/main, master, origin/master. On pull requests, pass origin/${{ github.base_ref }}."
+    required: false
+    default: ""
+  specs:
+    description: "Spec Check inputs, one path per line (relative). Default: the Spec Check config or specs/*/spec.md."
+    required: false
+    default: ""
+  prs:
+    description: "Outcome Check PR export (relative path; produce it with `gh pr list ... --json ...`). Outcome Check is skipped without it."
+    required: false
+    default: ""
+  runs:
+    description: "Outcome Check CI run export (relative path)."
+    required: false
+    default: ""
+  out-dir:
+    description: "Output directory, relative to working-directory."
+    required: false
+    default: "commons-report"
+  fail-on-error:
+    description: "Fail the step when a tool ended in error (findings never fail it)."
+    required: false
+    default: "false"
+outputs:
+  out-dir:
+    description: "Output directory (relative to the workspace) with every report, SUMMARY.md and commons-summary.json."
+    value: ${{ steps.commons-check.outputs.out-dir }}
+  verdict:
+    description: "Product Check verdict (READY, READY_WITH_CONDITIONS, NOT_READY, INCONCLUSIVE), or none."
+    value: ${{ steps.commons-check.outputs.verdict }}
+  errors:
+    description: "Number of steps that ended in error."
+    value: ${{ steps.commons-check.outputs.errors }}
+runs:
+  using: "composite"
+  steps:
+    - name: Install Commons Check runtime dependencies (pinned lockfile, no install scripts)
+      shell: bash
+      run: |
+        cd "$GITHUB_ACTION_PATH"
+        if [ ! -d node_modules/@enwithai/product-check ]; then
+          npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+        fi
+        test -f dist/action/main.js || { echo "::error::dist/ is missing in this Commons Check ref; use a release tag"; exit 1; }
+    - name: Run Commons Check
+      id: commons-check
+      shell: bash
+      env:
+        INPUT_WORKING_DIRECTORY: ${{ inputs.working-directory }}
+        INPUT_STAGE: ${{ inputs.stage }}
+        INPUT_BASE: ${{ inputs.base }}
+        INPUT_SPECS: ${{ inputs.specs }}
+        INPUT_PRS: ${{ inputs.prs }}
+        INPUT_RUNS: ${{ inputs.runs }}
+        INPUT_OUT_DIR: ${{ inputs.out-dir }}
+        INPUT_FAIL_ON_ERROR: ${{ inputs.fail-on-error }}
+      run: node "$GITHUB_ACTION_PATH/dist/action/main.js"

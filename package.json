@@ -1,0 +1,77 @@
+{
+  "name": "@enwithai/commons-check",
+  "version": "0.1.0",
+  "description": "One command for the EnWithAI Engineering Commons: runs Spec Check, Impact Check, Architecture Check, Outcome Check and Product Check on a repository, wires their outputs together and writes one summary. Offline, in-process, report only.",
+  "license": "MIT",
+  "author": "EnWithAI Technologies",
+  "homepage": "https://github.com/enwithai/commons-check#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enwithai/commons-check.git"
+  },
+  "bugs": {
+    "url": "https://github.com/enwithai/commons-check/issues"
+  },
+  "type": "module",
+  "bin": {
+    "commons-check": "dist/cli/main.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "NOTICE.md",
+    "ATTRIBUTION.md",
+    "TRADEMARKS.md"
+  ],
+  "engines": {
+    "node": "^22 || ^24 || >=26"
+  },
+  "keywords": [
+    "engineering-commons",
+    "spec-check",
+    "impact-check",
+    "architecture-check",
+    "product-check",
+    "developer-tools"
+  ],
+  "scripts": {
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json && node scripts/postbuild.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "check:all": "npm run typecheck && npm run lint && npm run format:check && npm run build && npm run test:coverage"
+  },
+  "dependencies": {
+    "@enwithai/architecture-check": "0.2.0",
+    "@enwithai/impact-check": "0.3.0",
+    "@enwithai/outcome-check": "0.1.0",
+    "@enwithai/product-check": "0.2.0",
+    "@enwithai/spec-check": "0.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.19.1",
+    "@vitest/coverage-v8": "5.0.3",
+    "eslint": "10.12.0",
+    "prettier": "3.9.9",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.1",
+    "vitest": "5.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

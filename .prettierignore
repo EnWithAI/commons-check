@@ -1,0 +1,7 @@
+# Generated or byte-compared files are excluded from formatting.
+dist/
+coverage/
+node_modules/
+package-lock.json
+test/fixtures/
+examples/demo/output/
