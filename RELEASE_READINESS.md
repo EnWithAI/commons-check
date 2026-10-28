@@ -27,9 +27,17 @@ Node 25 is outside the declared `engines` range (22/24/≥26). CI runs Node 22, 
 - **Over-escaping** in `SUMMARY.md`. Parentheses, `#`, `+` and `!` are no longer escaped (they cannot form markup once
   `[`, `]`, `<` and `>` are), and the stage is shown as code.
 
+## GitHub verification (2026-10-28)
+
+| Check                               | Result                                                                                                                                                           |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Repository                          | public `EnWithAI/commons-check` (created with the user's approval); private vulnerability reporting enabled                                                      |
+| CI on `main` (40725600974)          | green on Node 22, 24 and 26                                                                                                                                      |
+| Action, first run (40725664906)     | failed: `${{ github.base_ref }}` in an input description made `action.yml` invalid. Fixed in #1, with a regression test                                          |
+| Action, after the fix (40726060980) | passed from a clean install: 50 packages, 5 steps with 0 errors, summary and artifact written (the CI assertion was also corrected to this repository's outputs) |
+
 ## Not yet verified
 
-- The GitHub Action on a runner (`action-clean-install` in CI). It runs once the repository exists.
 - `npx @enwithai/commons-check` from the registry. It is not published.
 
 ## Process note

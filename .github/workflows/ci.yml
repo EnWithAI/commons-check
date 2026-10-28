@@ -70,7 +70,9 @@ jobs:
           test ! -e node_modules/vitest
           test "$ERRORS" = 0
           test -n "$VERDICT"
-          for f in SUMMARY.md commons-summary.json spec-check.json impact-check.json graph.json product-check/product-check-results.json; do test -s "$OUT_DIR/$f"; done
+          # This repository has no specs and no architecture model: Spec Check is skipped, Architecture Check is no-model.
+          for f in SUMMARY.md commons-summary.json impact-check.json graph.json as-built.dsl product-check/product-check-results.json; do test -s "$OUT_DIR/$f"; done
+          test ! -e "$OUT_DIR/spec-check.json"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: commons-report

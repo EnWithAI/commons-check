@@ -81,4 +81,13 @@ The outputs are:
 ## Verification status
 
 CI runs the action on this repository for every pull request (`action-clean-install`), starting from a clean install
-as a consumer would. The first runner result will be recorded here once the repository is on GitHub.
+as a consumer would.
+
+First runs on GitHub, 2026-10-28, on EnWithAI/commons-check#1:
+
+- **Run 40725664906 failed.** `action.yml` did not load because an input description contained a `${{ }}`
+  expression, which GitHub evaluates even in descriptions. That is fixed, and a test now rejects expressions outside
+  `value:` and `INPUT_*` lines.
+- **Run 40726060980 passed.** The action's own install step added 50 packages. On this repository it reported:
+  Spec Check skipped (no specs), Impact Check ok, Architecture Check `no-model` (as-built model attached), Outcome
+  Check skipped, Product Check INCONCLUSIVE, 0 errors. The summary was written and the artifact uploaded.
