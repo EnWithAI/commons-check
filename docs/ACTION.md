@@ -47,8 +47,9 @@ files:
     runs: runs.json
 ```
 
-Leave `commits` out of the PR export, or limit it to about 30 PRs (see the README), because of GitHub's GraphQL
-node limit.
+This quick export leaves out `commits`, so CI first-pass rate and commits after first review are `unknown`. For the
+full history with commits, run the paginated query from [Outcome Check's EXPORTING.md](https://github.com/enwithai/outcome-check/blob/main/docs/EXPORTING.md) in that step instead,
+write `prs.jsonl`, and pass `prs: prs.jsonl`. Do not add `,commits` to `gh pr list`: GitHub rejects it from 50 PRs.
 
 ## Inputs and outputs
 

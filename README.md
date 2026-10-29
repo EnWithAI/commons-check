@@ -31,8 +31,8 @@ The output goes to `commons-report/`:
 the tool that produced it. A **fact** was verified statically, a **hypothesis** needs a person to confirm it, and
 **unknown** cannot be determined statically. Only facts appear in "what to do first".
 
-> Status: **early release** (`0.1.0`, pre-1.0, summary schema 1.0). Pins Spec Check 0.2.0, Impact Check 0.3.0,
-> Architecture Check 0.2.0, Outcome Check 0.1.0 and Product Check 0.2.0.
+> Status: **early release** (`0.1.1`, pre-1.0, summary schema 1.0). Pins Spec Check 0.2.0, Impact Check 0.3.0,
+> Architecture Check 0.2.0, Outcome Check 0.2.0 and Product Check 0.2.0.
 
 ## Usage
 
@@ -51,17 +51,26 @@ npx @enwithai/commons-check --prs prs.json --runs runs.json   # add Outcome Chec
 npx @enwithai/commons-check --skip outcome --out-dir reports/commons
 ```
 
-Outcome Check reads data you export yourself. Commons Check never calls an API:
+Outcome Check reads data you export yourself. Commons Check never calls an API. Two ways to export the PRs:
+
+- **Full history with commits (recommended).** Use the paginated, read-only `gh api graphql --paginate` query in
+  [Outcome Check's EXPORTING.md](https://github.com/enwithai/outcome-check/blob/main/docs/EXPORTING.md). It writes `prs.jsonl` (JSON Lines), which Outcome Check 0.2.0 reads directly:
+  `--prs prs.jsonl`.
+- **Quick, without commits:**
+
+  ```bash
+  gh pr list --state all --limit 1000 --json number,title,state,isDraft,createdAt,closedAt,mergedAt,author,labels,additions,deletions,reviews > prs.json
+  ```
+
+  This loses CI first-pass rate, commits after first review and commit-trailer attribution, which show as `unknown`.
+  Do not add `,commits` to `gh pr list`. gh then asks for 100 commit authors per commit, and GitHub rejects the query
+  from 50 PRs (500,000-node GraphQL limit).
+
+CI runs, for CI first-pass rate:
 
 ```bash
-gh pr list --state all --limit 1000 --json number,title,state,isDraft,createdAt,closedAt,mergedAt,author,labels,additions,deletions,reviews > prs.json
 gh run list --limit 1000 --json databaseId,headSha,event,status,conclusion,attempt,createdAt,workflowName > runs.json
 ```
-
-Current `gh` releases fetch up to 100 commits with authors for each PR, so adding `commits` to the field list hits
-GitHub's 500,000-node GraphQL limit above about 30 PRs per call. The command above leaves `commits` out, so Outcome
-Check shows CI first-pass rate and post-review commits as `unknown`. For those two metrics, add `,commits` and use
-`--limit 30` (recent PRs only).
 
 **Choose the stage honestly.** The stage decides which Product Check controls apply:
 

@@ -86,6 +86,18 @@ describe("full run", () => {
   });
 });
 
+describe("Outcome Check exports", () => {
+  it("accepts the paginated JSON Lines PR export (Outcome Check 0.2.0)", async () => {
+    const lines = (JSON.parse(SHOP["ops/prs.json"]!) as object[]).map((r) => JSON.stringify(r)).join("\n");
+    const dir = gitRepo({ ...SHOP, "ops/prs.jsonl": `${lines}\n` });
+    const r = await cli(["--prs", "ops/prs.jsonl", "--skip", "product", "--quiet"], dir);
+    expect(r.code).toBe(0);
+    const outcome = r.result!.summary.steps.find((x) => x.id === "outcome")!;
+    expect(outcome.status, outcome.reason ?? "").toBe("ok");
+    expect(r.result!.summary.outcome?.find((m) => m.id === "acceptance_rate")?.value).toBe(1);
+  });
+});
+
 describe("degraded repositories", () => {
   it("no specs, no model: Spec Check skipped, as-built model attached, Product Check still runs", async () => {
     const files = { ...SHOP };

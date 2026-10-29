@@ -5,6 +5,15 @@ versions may change the summary format, which carries its own `schema_version`).
 
 ## Unreleased
 
+## 0.1.1 — 2026-10-29
+
+- Pins Outcome Check 0.2.0. `--prs` and `--runs` now accept JSON Lines, so the paginated, read-only
+  `gh api graphql --paginate` export with commits (Outcome Check's `docs/EXPORTING.md`) can be passed directly. The
+  full PR history with CI first-pass rate is now possible.
+- `--help`, the README and `docs/ACTION.md` recommend that export and correct the limit of the
+  `gh pr list …,commits` export. GitHub rejects it from 50 PRs; 0.1.0 said "about 30".
+- README note: `npx @enwithai/commons-check` fails inside a checkout of Commons Check itself.
+
 ## 0.1.0 — 2026-10-28
 
 First version. Runs Spec Check 0.2.0, Impact Check 0.3.0 (with its module graph), Architecture Check 0.2.0, Outcome
