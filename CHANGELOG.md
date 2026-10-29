@@ -5,6 +5,15 @@ versions may change the summary format, which carries its own `schema_version`).
 
 ## Unreleased
 
+## 0.1.2 — 2026-10-29
+
+- Pins Architecture Check 0.2.1. Its repository walk honours `.gitignore` and `.git/info/exclude`, so git-ignored
+  directories (nested repositories, generated manifests, other tools' fixtures) no longer reach the as-built model.
+  Skipped paths are listed in Architecture Check's own report as `gitignored-skipped`. Found by running Commons
+  Check on the Engineering Commons workspace, where the attached `as-built.dsl` held 8 containers from
+  Architecture Check's test fixtures; with 0.2.1 it holds none. Impact Check and Product Check already respected git,
+  so the three tools now agree on what the repository contains.
+
 ## 0.1.1 — 2026-10-29
 
 - Pins Outcome Check 0.2.0. `--prs` and `--runs` now accept JSON Lines, so the paginated, read-only
