@@ -38,6 +38,10 @@ the tool that produced it. A **fact** was verified statically, a **hypothesis** 
 
 Requires Node.js 22, 24 or ≥ 26, and git. Run it from the repository root, on the branch you want assessed.
 
+> Do not run `npx @enwithai/commons-check` inside a checkout of Commons Check itself. There npx resolves the name to
+> the local project instead of downloading the package, and fails with `commons-check: command not found`. Run it
+> from the repository you want to assess.
+
 ```bash
 npx @enwithai/commons-check                                   # stage ALPHA, all defaults
 npx @enwithai/commons-check --stage LAUNCH_GATE --base main   # choose the lifecycle stage and the base branch
