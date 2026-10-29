@@ -38,7 +38,7 @@ Options:
                             ${STAGES.join(", ")}
   --base <ref>              Impact Check base ref (default: main, origin/main, master, origin/master)
   --specs <path>            Spec Check input file or directory (repeatable; default: its config or specs/*/spec.md)
-  --prs <file>              Outcome Check PR export (step skipped without it); --runs <file> CI run export
+  --prs <file>              Outcome Check PR export, JSON or JSON Lines (step skipped without it); --runs <file> CI runs
   --test-results <file>     JUnit XML or Jest/Vitest JSON for Product Check (repeatable)
   --npm-audit <file>        \`npm audit --json\` output for Product Check
   --openslo <file>          OpenSLO v1 file for Product Check (repeatable)
@@ -51,10 +51,12 @@ Options:
   -h, --help / -v, --version
 
 Outcome Check reads data you export yourself (Commons Check never calls an API):
+  Full PR history with commits (recommended): the paginated \`gh api graphql --paginate … > prs.jsonl\` query in
+    https://github.com/enwithai/outcome-check/blob/main/docs/EXPORTING.md
+  Quick, without commits (CI first-pass, commits after first review and trailer attribution become unknown):
   gh pr list --state all --limit 1000 --json number,title,state,isDraft,createdAt,closedAt,mergedAt,author,labels,additions,deletions,reviews > prs.json
   gh run list --limit 1000 --json databaseId,headSha,event,status,conclusion,attempt,createdAt,workflowName > runs.json
-  (Without ,commits: CI first-pass and post-review commits are unknown. Adding ,commits hits GitHub's node limit
-   above ~30 PRs per call, so use --limit 30 with it.)
+  (Do not add ,commits to gh pr list: GitHub rejects it from 50 PRs.)
 
 Impact Check compares with the base branch: in CI, check out with full history (fetch-depth: 0).
 Exit codes: 0 completed · 1 internal error · 2 usage error · 3 input error · 4 a step errored (--fail-on-error)

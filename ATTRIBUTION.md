@@ -25,7 +25,7 @@ project's human sponsor. Test fixtures are synthetic.
 | [Spec Check](https://github.com/enwithai/spec-check)                 | 0.2.0          | MIT     | Step 1, called in-process                  |
 | [Impact Check](https://github.com/enwithai/impact-check)             | 0.3.0          | MIT     | Step 2 (change report and module graph)    |
 | [Architecture Check](https://github.com/enwithai/architecture-check) | 0.2.0          | MIT     | Step 3                                     |
-| [Outcome Check](https://github.com/enwithai/outcome-check)           | 0.1.0          | MIT     | Step 4 (with exported PR data)             |
+| [Outcome Check](https://github.com/enwithai/outcome-check)           | 0.2.0          | MIT     | Step 4 (with exported PR data)             |
 | [Product Check](https://github.com/enwithai/product-check)           | 0.2.0          | MIT     | Step 5, importing the reports of steps 1–4 |
 
 Development tools (Vitest, ESLint, typescript-eslint, Prettier, TypeScript) are not distributed. Listing a project

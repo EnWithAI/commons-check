@@ -1,4 +1,25 @@
-# Release readiness — Commons Check 0.1.0
+# Release readiness — Commons Check 0.1.1
+
+Date: 2026-10-29 · Branch `release/v0.1.1` · **Verdict: READY FOR HUMAN REVIEW**. The npm release of 0.1.1 was requested
+by the user on 2026-10-29; the user publishes with 2FA.
+
+## 0.1.1
+
+- Pins Outcome Check 0.2.0, which adds JSON Lines input and the paginated export with commits.
+- Updated export guidance.
+- The README note from #3.
+
+| Check                    | Result                                                                                                                                                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pin proves the fix       | new test `accepts the paginated JSON Lines PR export`: passes with Outcome Check 0.2.0, fails with 0.1.0 (`--prs is not valid JSON`)                                                                                                                                |
+| Full gate                | `npm run check:all`: 3 files / 13 tests passed; lines 95.95%                                                                                                                                                                                                        |
+| Licenses / audit         | production 50 packages (MIT 45, ISC 4, Apache-2.0 1), 0 disallowed; `npm audit --omit=dev` 0                                                                                                                                                                        |
+| Package                  | 28 files, 20.4 kB                                                                                                                                                                                                                                                   |
+| Clean install, real data | packed 0.1.1 on impact-check with the paginated `prs.jsonl` export and `runs.json`: all steps at their pinned versions (Outcome Check 0.2.0); SUMMARY.md shows "CI first-pass rate: 100%", where 0.1.0 showed "withheld (field-not-exported)"; repository untouched |
+
+---
+
+# Release readiness — Commons Check 0.1.0 (history)
 
 Date: 2026-10-28 · Branch `release/v0.1.0` · **Verdict: READY FOR HUMAN REVIEW**. On GitHub (EnWithAI/commons-check).
 The npm release of 0.1.0 was requested by the user on 2026-10-28; the user publishes with 2FA.
@@ -9,7 +30,7 @@ Node 25 is outside the declared `engines` range (22/24/≥26). CI runs Node 22, 
 
 | Check             | Command                                                              | Result                                                                                                                                                                                                                                                          |
 | ----------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Full gate         | `npm run check:all`                                                  | exit 0: typecheck, lint, format, build; 4 files / 11 tests passed; lines 95.95%, branches 77.35%                                                                                                                                                                |
+| Full gate         | `npm run check:all`                                                  | exit 0: typecheck, lint, format, build; 3 files / 11 tests passed; lines 95.95%, branches 77.35%                                                                                                                                                                |
 | Licenses          | `node scripts/license-audit.mjs` / `--all`                           | production: 50 packages (MIT 45, ISC 4, Apache-2.0 1: `typescript`, via Impact Check); all: 87; disallowed 0                                                                                                                                                    |
 | Package           | `npm pack --dry-run`                                                 | 28 files, about 20 kB (the five tools come in as dependencies)                                                                                                                                                                                                  |
 | Clean install     | pack → install the tarball in an empty directory                     | works; `commons-check --version` 0.1.0                                                                                                                                                                                                                          |
