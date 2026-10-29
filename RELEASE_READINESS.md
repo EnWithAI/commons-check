@@ -1,4 +1,24 @@
-# Release readiness — Commons Check 0.1.1
+# Release readiness — Commons Check 0.1.2
+
+Date: 2026-10-29 · Branch `release/v0.1.2` · **Verdict: READY FOR HUMAN REVIEW**. Release PR requested by the user on
+2026-10-29; tag, GitHub release and npm publish (by the user, 2FA) each need approval.
+
+## 0.1.2
+
+- Pins Architecture Check 0.2.1 (published 2026-10-29, EnWithAI/architecture-check#7 and #8), whose walk honours
+  `.gitignore` and `.git/info/exclude`.
+
+| Check                    | Result                                                                                                                                                                                              |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pin proves the fix       | new test `leaves git-ignored directories out of the as-built model`: passes with Architecture Check 0.2.1, fails with 0.2.0 (`as-built.dsl` contains the ignored `nested_fixture` service)          |
+| Full gate                | `npm run check:all`: 3 files / 14 tests passed; lines 95.95%                                                                                                                                        |
+| Licenses / audit         | production 50 packages (MIT 45, ISC 4, Apache-2.0 1), 0 disallowed; `npm audit --omit=dev` 0                                                                                                        |
+| Package                  | 28 files, 20.7 kB; local pack shasum `3ef3e3995822145c6a1d9f61b7ccef484c168a06` (from this branch, no tag)                                                                                          |
+| Clean install, real data | packed 0.1.2 on the Engineering Commons workspace: architecture-check 0.2.1 in SUMMARY.md; `as-built.dsl` has 0 containers (0.1.1: 8 from Architecture Check's test fixtures); repository untouched |
+
+---
+
+# Release readiness — Commons Check 0.1.1 (history)
 
 Date: 2026-10-29 · Branch `release/v0.1.1` · **Verdict: READY FOR HUMAN REVIEW**. The npm release of 0.1.1 was requested
 by the user on 2026-10-29; the user publishes with 2FA.

@@ -98,6 +98,23 @@ describe("Outcome Check exports", () => {
   });
 });
 
+describe("Architecture Check walk", () => {
+  it("leaves git-ignored directories out of the as-built model (Architecture Check 0.2.1)", async () => {
+    const files: Record<string, string> = {
+      ...SHOP,
+      ".gitignore": `${SHOP[".gitignore"]}nested/\n`,
+      "nested/compose.yml": "services:\n  nested_fixture:\n    image: nginx:1.27\n",
+    };
+    delete files["architecture/workspace.dsl"];
+    const dir = gitRepo(files);
+    const r = await cli(["--skip", "product", "--quiet"], dir);
+    expect(r.code).toBe(0);
+    expect(r.result!.summary.steps.find((x) => x.id === "architecture")?.status).toBe("no-model");
+    expect(existsSync(join(dir, "nested/compose.yml"))).toBe(true);
+    expect(readFileSync(join(dir, "commons-report", "as-built.dsl"), "utf8")).not.toContain("nested_fixture");
+  });
+});
+
 describe("degraded repositories", () => {
   it("no specs, no model: Spec Check skipped, as-built model attached, Product Check still runs", async () => {
     const files = { ...SHOP };

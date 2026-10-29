@@ -31,8 +31,8 @@ The output goes to `commons-report/`:
 the tool that produced it. A **fact** was verified statically, a **hypothesis** needs a person to confirm it, and
 **unknown** cannot be determined statically. Only facts appear in "what to do first".
 
-> Status: **early release** (`0.1.1`, pre-1.0, summary schema 1.0). Pins Spec Check 0.2.0, Impact Check 0.3.0,
-> Architecture Check 0.2.0, Outcome Check 0.2.0 and Product Check 0.2.0.
+> Status: **early release** (`0.1.2`, pre-1.0, summary schema 1.0). Pins Spec Check 0.2.0, Impact Check 0.3.0,
+> Architecture Check 0.2.1, Outcome Check 0.2.0 and Product Check 0.2.0.
 
 ## Usage
 

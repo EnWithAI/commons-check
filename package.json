@@ -1,6 +1,6 @@
 {
   "name": "@enwithai/commons-check",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "One command for the EnWithAI Engineering Commons: runs Spec Check, Impact Check, Architecture Check, Outcome Check and Product Check on a repository, wires their outputs together and writes one summary. Offline, in-process, report only.",
   "license": "MIT",
   "author": "EnWithAI Technologies",
@@ -55,7 +55,7 @@
     "check:all": "npm run typecheck && npm run lint && npm run format:check && npm run build && npm run test:coverage"
   },
   "dependencies": {
-    "@enwithai/architecture-check": "0.2.0",
+    "@enwithai/architecture-check": "0.2.1",
     "@enwithai/impact-check": "0.3.0",
     "@enwithai/outcome-check": "0.2.0",
     "@enwithai/product-check": "0.2.0",

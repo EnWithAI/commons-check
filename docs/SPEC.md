@@ -10,7 +10,7 @@ its own. Every finding, status and verdict comes from the tool that produced it,
 | ---- | ----------------------------------- | ------------------------------------------------------ |
 | 1    | Spec Check 0.2.0                    | Are the requirements clear enough to build from?       |
 | 2    | Impact Check 0.3.0 (+ module graph) | What does this change affect?                          |
-| 3    | Architecture Check 0.2.0            | Does the architecture model still describe the code?   |
+| 3    | Architecture Check 0.2.1            | Does the architecture model still describe the code?   |
 | 4    | Outcome Check 0.2.0 (optional)      | What did delivery achieve? (needs exported PR/CI data) |
 | 5    | Product Check 0.2.0                 | Does the product work, can it be trusted?              |
 
@@ -124,7 +124,7 @@ Paths in the summary are relative to `--cwd`. Repository-derived text is escaped
 
 ## 7. Versions
 
-Commons Check `0.1.1` pins Spec Check 0.2.0, Impact Check 0.3.0, Outcome Check 0.2.0, Architecture Check 0.2.0 and
+Commons Check `0.1.2` pins Spec Check 0.2.0, Impact Check 0.3.0, Outcome Check 0.2.0, Architecture Check 0.2.1 and
 Product Check 0.2.0 exactly. A new tool release reaches users through a new Commons Check release. The summary
 schema has its own `schema_version`.
 
