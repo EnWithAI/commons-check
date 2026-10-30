@@ -1,13 +1,13 @@
 # Commons Check
 
 **One command for the EnWithAI Engineering Commons: is the spec clear, what does the change affect, does the
-architecture still match, what did delivery achieve, and is the product ready?**
+architecture still match, what did delivery achieve, is the product ready, and what does the system look like?**
 
 ```bash
 npx @enwithai/commons-check --stage PRE_LAUNCH
 ```
 
-Commons Check runs the five Engineering Commons tools on your repository, in order, in one process. It feeds each
+Commons Check runs the six Engineering Commons tools on your repository, in order, in one process. It feeds each
 report into the next and writes one summary:
 
 | Step | Tool                                                                 | Question                                                        |
@@ -17,11 +17,13 @@ report into the next and writes one summary:
 | 3    | [Architecture Check](https://github.com/enwithai/architecture-check) | Does the architecture model still describe the code?            |
 | 4    | [Outcome Check](https://github.com/enwithai/outcome-check)           | What did delivery achieve? (with exported PR data)              |
 | 5    | [Product Check](https://github.com/enwithai/product-check)           | Does the product work, can it be trusted, what's next?          |
+| 6    | [Blueprint Check](https://github.com/enwithai/blueprint-check)       | What is the as-built architecture? (evidence-linked blueprint)  |
 
 The output goes to `commons-report/`:
 
 - every tool's own report;
 - Product Check's dashboard;
+- `blueprint/`: Blueprint Check's architecture dossier, Mermaid views, model and `workspace.dsl`;
 - **`SUMMARY.md`**, which holds:
   - each step's status and top findings with `path:line`;
   - Product Check's verdict and pillar scores, and every control it could not test, with the reason;
@@ -34,8 +36,8 @@ The output goes to `commons-report/`:
 the tool that produced it. A **fact** was verified statically, a **hypothesis** needs a person to confirm it, and
 **unknown** cannot be determined statically. Only facts appear in "what to do first".
 
-> Status: **early release** (`0.1.3`, pre-1.0, summary schema 1.0). Pins Spec Check 0.2.0, Impact Check 0.3.0,
-> Architecture Check 0.2.1, Outcome Check 0.2.0 and Product Check 0.3.0.
+> Status: **early release** (`0.2.0`, pre-1.0, summary schema 1.0). Pins Spec Check 0.2.0, Impact Check 0.3.0,
+> Architecture Check 0.2.1, Outcome Check 0.2.0, Product Check 0.3.0 and Blueprint Check 0.1.0.
 
 ## Usage
 

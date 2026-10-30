@@ -18,13 +18,14 @@ const versionOf = (path: string): string => {
 /** Commons Check package version. */
 export const TOOL_VERSION: string = versionOf(fileURLToPath(new URL("../package.json", import.meta.url)));
 
-/** The five tools, in run order. */
+/** The six tools, in run order. */
 export const TOOLS = [
   "spec-check",
   "impact-check",
   "architecture-check",
   "outcome-check",
   "product-check",
+  "blueprint-check",
 ] as const;
 export type ToolName = (typeof TOOLS)[number];
 

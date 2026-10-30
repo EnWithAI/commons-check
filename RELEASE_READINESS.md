@@ -1,4 +1,24 @@
-# Release readiness — Commons Check 0.1.3
+# Release readiness — Commons Check 0.2.0
+
+Date: 2026-11-10 · Branch `release/0.2.0` · **Verdict: RELEASE APPROVED** by the user on 2026-11-10 (tag, GitHub
+release; npm publish by the user with 2FA).
+
+## 0.2.0
+
+- Step 6: Blueprint Check 0.1.0 (published 2026-11-10) writes the as-built architecture blueprint to `blueprint/`.
+  Step 6 was built on `feat/blueprint-step` (`620160d`) and cherry-picked onto 0.1.3; the release-gate reporting from
+  0.1.3 is unchanged. The lockfile is regenerated from the registry.
+
+| Check                    | Result                                                                                                                                                                                                               |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Full gate                | `npm run check:all`: 4 files / 17 tests passed; lines 95.5%                                                                                                                                                          |
+| Licenses / audit         | production 51 packages (MIT 46, ISC 4, Apache-2.0 1), 0 disallowed; `npm audit --omit=dev` 0                                                                                                                         |
+| Package                  | 28 files, 23.5 kB; local pack shasum `1b90ef589c6e9effd98085b0e3c858fcf76999c7` (from this branch, no tag)                                                                                                           |
+| Clean install, real data | packed 0.2.0 on the product-check repository: all steps ran or skipped as expected, `blueprint: ok`, blueprint PROVISIONAL with 18 elements and 34 relationships, 6 views produced, 10 blocked; repository untouched |
+
+---
+
+# Release readiness — Commons Check 0.1.3 (history)
 
 Date: 2026-11-09 · Branch `release/0.1.3` · **Verdict: READY FOR HUMAN REVIEW**. Requested by the user on 2026-11-09
 ("keep it up to date"); the user publishes to npm with 2FA.

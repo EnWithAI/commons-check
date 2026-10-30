@@ -28,6 +28,7 @@ describe("full run", () => {
       "architecture:ok",
       "outcome:ok",
       "product:ok",
+      "blueprint:ok",
     ]);
     const out = join(dir, "commons-report");
     for (const f of [
@@ -45,8 +46,21 @@ describe("full run", () => {
       "product-check/dashboard.html",
       "SUMMARY.md",
       "commons-summary.json",
+      "blueprint/ARCHITECTURE_BLUEPRINT.md",
+      "blueprint/architecture-model.json",
+      "blueprint/workspace.dsl",
     ])
       expect(existsSync(join(out, f)), f).toBe(true);
+
+    // Blueprint Check drew the blueprint from the graph and Product Check's results.
+    const model = JSON.parse(readFileSync(join(out, "blueprint/architecture-model.json"), "utf8")) as {
+      inputs: { graph: { path: string } | null; product_check: { kind: string } | null };
+    };
+    expect(model.inputs.graph?.path).toMatch(/graph\.json$/);
+    expect(model.inputs.product_check?.kind).toBe("product-check-results");
+    expect(s.blueprint?.overall_status).toMatch(/PROVISIONAL|BLOCKED/);
+    expect(s.blueprint?.views["blocked"]).toBeGreaterThan(0);
+    expect(readFileSync(join(out, "SUMMARY.md"), "utf8")).toContain("## Blueprint Check:");
 
     // Product Check imported every report produced above.
     const results = JSON.parse(

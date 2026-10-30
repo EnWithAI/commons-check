@@ -5,6 +5,13 @@ versions may change the summary format, which carries its own `schema_version`).
 
 ## Unreleased
 
+## 0.2.0 — 2026-11-10
+
+- Step 6: Blueprint Check 0.1.0 generates the as-built architecture blueprint (dossier, Mermaid views, model,
+  evidence, coverage, `workspace.dsl`) into `blueprint/`, from the module graph and Product Check's surface. The
+  summary gains a `blueprint` block and a section in `SUMMARY.md`; `--skip blueprint` skips it. Additive: summary
+  schema stays 1.0. Pins `@enwithai/blueprint-check` 0.1.0.
+
 ## 0.1.3 — 2026-11-09
 
 - Pins Product Check 0.3.0 (CT3 v3.2 review-and-closure layer). The in-process assessment is unchanged: results
