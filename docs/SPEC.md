@@ -12,7 +12,7 @@ its own. Every finding, status and verdict comes from the tool that produced it,
 | 2    | Impact Check 0.3.0 (+ module graph) | What does this change affect?                          |
 | 3    | Architecture Check 0.2.1            | Does the architecture model still describe the code?   |
 | 4    | Outcome Check 0.2.0 (optional)      | What did delivery achieve? (needs exported PR/CI data) |
-| 5    | Product Check 0.2.0                 | Does the product work, can it be trusted?              |
+| 5    | Product Check 0.3.0                 | Does the product work, can it be trusted?              |
 
 ## 2. Invariants
 
@@ -79,6 +79,11 @@ Each step's configuration file is used when present: `.spec-check.json`, `.impac
    - Writes `product-check/`: `product-check-results.json`, `report.md`, `blueprint.md`, `work-packets/` and
      `dashboard.html`.
    - No network: no URL and no authorization is ever passed.
+   - **Release gate (read only).** When `--release-gate <file>` is given, or `.product-check/release-gate.json`
+     exists, the file is read and validated against Product Check's `release-gate` schema. Its decision is reported
+     unchanged, never evaluated, and compared with the commit this step assessed. An invalid file is reported as
+     not read; the run continues. A `--release-gate` path that does not exist is an input error (exit 3). Commons
+     Check never runs Product Check's review-and-closure commands (they need git and opt-in execution).
 
 Then `SUMMARY.md` and `commons-summary.json` are written to the output directory.
 
@@ -98,6 +103,10 @@ Then `SUMMARY.md` and `commons-summary.json` are written to the output directory
   - the three pillar scores with coverage and confidence (or "not scored");
   - open findings P0–P3;
   - every NOT_TESTED and BLOCKED control, with its reason.
+- **Release gate** (`release_gate`, null when there is none): file, `read` or `invalid` with the reason, decision,
+  product verdict and time as recorded, the gate's commit, the commit assessed in this run, `current`
+  (true / false / null when either commit is unknown), the blocking reasons and the number of open blocking findings.
+  A gate for an older commit is flagged in `SUMMARY.md`. It never adds to "What to do first".
 - **Outcome Check:** each metric's all-PR value, or the reason it was withheld.
 - **"What to do first":** up to 5 actions in this order:
   1. Product Check P0, then P1, findings;
@@ -124,8 +133,8 @@ Paths in the summary are relative to `--cwd`. Repository-derived text is escaped
 
 ## 7. Versions
 
-Commons Check `0.1.2` pins Spec Check 0.2.0, Impact Check 0.3.0, Outcome Check 0.2.0, Architecture Check 0.2.1 and
-Product Check 0.2.0 exactly. A new tool release reaches users through a new Commons Check release. The summary
+Commons Check `0.1.3` pins Spec Check 0.2.0, Impact Check 0.3.0, Outcome Check 0.2.0, Architecture Check 0.2.1 and
+Product Check 0.3.0 exactly. A new tool release reaches users through a new Commons Check release. The summary
 schema has its own `schema_version`.
 
 ## 8. Expected cases (tests are written first)

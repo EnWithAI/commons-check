@@ -25,14 +25,17 @@ The output goes to `commons-report/`:
 - **`SUMMARY.md`**, which holds:
   - each step's status and top findings with `path:line`;
   - Product Check's verdict and pillar scores, and every control it could not test, with the reason;
+  - Product Check's **release gate** (`GO`, `CONDITIONAL_GO`, `NO_GO` or `UNKNOWN`) when you have recorded one with
+    `product-check assure`: reported as recorded, never re-evaluated, and flagged when it describes an older commit
+    (`--release-gate <file>`; default `.product-check/release-gate.json`);
   - **what to do first**.
 
 **Report only.** Findings never fail the command. Nothing is invented: every finding, status and verdict comes from
 the tool that produced it. A **fact** was verified statically, a **hypothesis** needs a person to confirm it, and
 **unknown** cannot be determined statically. Only facts appear in "what to do first".
 
-> Status: **early release** (`0.1.2`, pre-1.0, summary schema 1.0). Pins Spec Check 0.2.0, Impact Check 0.3.0,
-> Architecture Check 0.2.1, Outcome Check 0.2.0 and Product Check 0.2.0.
+> Status: **early release** (`0.1.3`, pre-1.0, summary schema 1.0). Pins Spec Check 0.2.0, Impact Check 0.3.0,
+> Architecture Check 0.2.1, Outcome Check 0.2.0 and Product Check 0.3.0.
 
 ## Usage
 
@@ -124,6 +127,9 @@ exports and the security model.
 - No network access, no API calls, no telemetry, and nothing from your repository is executed. The tools run
   in-process. Product Check is never given a URL.
 - No fixes: it changes nothing in your repository and writes only to the output directory.
+- No review-and-closure workflow of its own: Product Check's `review`, `verify`, `approve` and `assure` need git,
+  signed approvals and opt-in execution, so you run them with Product Check itself. Commons Check only reads the
+  release gate they record.
 
 Each tool's limits apply and are listed in its own report.
 

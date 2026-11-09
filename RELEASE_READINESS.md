@@ -1,4 +1,25 @@
-# Release readiness — Commons Check 0.1.2
+# Release readiness — Commons Check 0.1.3
+
+Date: 2026-11-09 · Branch `release/0.1.3` · **Verdict: READY FOR HUMAN REVIEW**. Requested by the user on 2026-11-09
+("keep it up to date"); the user publishes to npm with 2FA.
+
+## 0.1.3
+
+- Pins Product Check 0.3.0 (published 2026-11-09, EnWithAI/product-check#8, #9, #10).
+- Reads Product Check's recorded release gate (`--release-gate`, default `.product-check/release-gate.json`) and
+  reports it unchanged, flagging a gate for an older commit (workspace decision D-114, "later option").
+
+| Check                    | Result                                                                                                                                                                                                                                                                                          |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tests first              | `test/release-gate.test.ts`: a gate written by the real Product Check 0.3.0 CLI (`run` → `register` → `assure`) is reported with `current: true`; after a new commit `false`; an invalid file is `invalid` with the schema error; no file → no section; a missing `--release-gate` path exits 3 |
+| Full gate                | `npm run check:all`: 4 files / 17 tests passed; lines 95.53%                                                                                                                                                                                                                                    |
+| Licenses / audit         | production 50 packages (MIT 45, ISC 4, Apache-2.0 1), 0 disallowed; `npm audit --omit=dev` 0                                                                                                                                                                                                    |
+| Package                  | 28 files, 22.6 kB; local pack shasum `96e39ffafec035244b6f9a554b71449dd2ab6b82` (from this branch, no tag)                                                                                                                                                                                      |
+| Clean install, real data | packed 0.1.3 on the product-check repository: product-check 0.3.0 in the summary, verdict INCONCLUSIVE, no gate file so no gate section; repository untouched. On a synthetic repository with a recorded gate: `UNKNOWN`, `current: true`                                                       |
+
+---
+
+# Release readiness — Commons Check 0.1.2 (history)
 
 Date: 2026-10-29 · Branch `release/v0.1.2` · **Verdict: READY FOR HUMAN REVIEW**. Release PR requested by the user on
 2026-10-29; tag, GitHub release and npm publish (by the user, 2FA) each need approval.

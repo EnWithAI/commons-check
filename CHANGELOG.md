@@ -5,6 +5,16 @@ versions may change the summary format, which carries its own `schema_version`).
 
 ## Unreleased
 
+## 0.1.3 — 2026-11-09
+
+- Pins Product Check 0.3.0 (CT3 v3.2 review-and-closure layer). The in-process assessment is unchanged: results
+  schema 0.1.0 and the same 51 controls; the new workflow needs git and opt-in execution, so Commons Check does not
+  run it.
+- Reads Product Check's release gate when one exists (`--release-gate <file>`, default
+  `.product-check/release-gate.json`), validates it against Product Check's schema and reports its decision in
+  `commons-summary.json` (`release_gate`) and `SUMMARY.md` as recorded, never re-evaluated. A gate recorded for an
+  older commit than the one assessed is flagged. Additive: summary schema stays 1.0. A file read, no process.
+
 ## 0.1.2 — 2026-10-29
 
 - Pins Architecture Check 0.2.1. Its repository walk honours `.gitignore` and `.git/info/exclude`, so git-ignored

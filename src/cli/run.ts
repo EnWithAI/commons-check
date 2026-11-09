@@ -44,6 +44,8 @@ Options:
   --openslo <file>          OpenSLO v1 file for Product Check (repeatable)
   --alert-rules <file>      Prometheus/Mimir rules for Product Check (repeatable)
   --service-graph <file>    Jaeger dependencies or service-graph query result for Product Check
+  --release-gate <file>     Product Check release-gate.json to report (default: .product-check/release-gate.json
+                            when it exists); reported as recorded, never re-evaluated
   --skip <step>             Skip a step: ${STEPS.join(", ")} (repeatable)
   --fail-on-error           Exit 4 when a step ended in error (default: report it and exit 0)
   --no-branding             Omit footer links
@@ -98,6 +100,7 @@ async function main(argv: string[], io: CliIO): Promise<number> {
         openslo: { type: "string", multiple: true },
         "alert-rules": { type: "string", multiple: true },
         "service-graph": { type: "string" },
+        "release-gate": { type: "string" },
         skip: { type: "string", multiple: true },
         "fail-on-error": { type: "boolean" },
         "no-branding": { type: "boolean" },
@@ -142,6 +145,7 @@ async function main(argv: string[], io: CliIO): Promise<number> {
     openslo: values.openslo ?? [],
     alertRules: values["alert-rules"] ?? [],
     serviceGraph: values["service-graph"] ?? null,
+    releaseGate: values["release-gate"] ?? null,
     skip: skip as StepId[],
     branding: !values["no-branding"],
     ...(io.now ? { now: io.now } : {}),

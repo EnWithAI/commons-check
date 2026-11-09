@@ -49,6 +49,24 @@ export interface ProductSummary {
   blocked: { control_id: string; title: string; reason: string | null }[];
 }
 
+/**
+ * Product Check's release gate as recorded by its owner (`product-check assure` or `gate`). Reported unchanged; Commons
+ * Check never evaluates it. `current` says whether it describes the commit Product Check assessed in this run.
+ */
+export interface ReleaseGateSummary {
+  file: string;
+  status: "read" | "invalid";
+  reason: string | null;
+  decision: string | null;
+  product_verdict: string | null;
+  evaluated_at: string | null;
+  gate_commit: string | null;
+  scanned_commit: string | null;
+  current: boolean | null;
+  blocking_reasons: string[];
+  open_blocking: number;
+}
+
 /** One recommended action. */
 export interface Action {
   source: string;
@@ -70,6 +88,7 @@ export interface Summary {
   out_dir: string;
   steps: StepSummary[];
   product: ProductSummary | null;
+  release_gate: ReleaseGateSummary | null;
   outcome: { id: string; title: string; value: number | null; unit: string; reason: string | null }[] | null;
   actions: Action[];
   needs_confirmation: number;
@@ -108,6 +127,7 @@ function count(values: string[]): Record<string, number> {
 /** Input to buildSummary. */
 export interface SummaryInput {
   steps: StepResult[];
+  releaseGate?: ReleaseGateSummary | null;
   repository: string;
   stage: string;
   base: string | null;
@@ -194,6 +214,7 @@ export function buildSummary(input: SummaryInput): Summary {
     out_dir: input.outDir,
     steps,
     product,
+    release_gate: input.releaseGate ?? null,
     outcome: outcomeStep ? outcomeSummary(outcomeStep.report) : null,
     actions: actions.slice(0, 5),
     needs_confirmation: input.steps
@@ -317,6 +338,41 @@ export function renderSummaryMarkdown(s: Summary, options: { branding: boolean }
           `- ${code(c.control_id)} ${c.s} — ${escapeMd(c.title)}${c.reason ? `: ${escapeMd(c.reason)}` : ""}`
         );
       out.push("", "</details>", "");
+    }
+  }
+
+  if (s.release_gate) {
+    const g = s.release_gate;
+    const short = (sha: string | null): string => (sha ? code(sha.slice(0, 12)) : "unknown");
+    if (g.status === "invalid") {
+      out.push("## Product Check release gate: not read", "");
+      out.push(`${code(g.file)}: ${escapeMd(g.reason ?? "invalid")}`, "");
+    } else {
+      out.push(`## Product Check release gate: ${escapeMd(g.decision ?? "")}`, "");
+      out.push(
+        `Recorded by Product Check in ${code(g.file)}${g.evaluated_at ? ` at ${escapeMd(g.evaluated_at)}` : ""} for commit ${short(g.gate_commit)}; reported as recorded, not re-evaluated.${g.product_verdict ? ` Product verdict then: ${escapeMd(g.product_verdict)}.` : ""}`,
+        ""
+      );
+      if (g.current === false)
+        out.push(
+          `> The gate describes an older commit: this run assessed ${short(g.scanned_commit)}. Re-run \`product-check assure\` before relying on it.`,
+          ""
+        );
+      else if (g.current === null)
+        out.push(
+          "> Whether the gate describes this commit is unknown (no Product Check commit to compare).",
+          ""
+        );
+      if (g.blocking_reasons.length > 0) {
+        out.push(
+          `Blocking reasons (${g.blocking_reasons.length}; ${g.open_blocking} open blocking finding(s)):`,
+          ""
+        );
+        for (const reason of g.blocking_reasons.slice(0, 5)) out.push(`- ${escapeMd(reason)}`);
+        if (g.blocking_reasons.length > 5)
+          out.push(`- … ${g.blocking_reasons.length - 5} more in the gate file`);
+        out.push("");
+      }
     }
   }
 
