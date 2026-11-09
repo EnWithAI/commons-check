@@ -5,7 +5,7 @@
  * collects what the summary needs. A step that cannot run is recorded as skipped or error; the others still run.
  * Nothing here starts a process or opens a connection.
  */
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import * as architectureCheck from "@enwithai/architecture-check";
 import * as impactCheck from "@enwithai/impact-check";
@@ -13,7 +13,7 @@ import * as outcomeCheck from "@enwithai/outcome-check";
 import * as productCheck from "@enwithai/product-check";
 import * as specCheck from "@enwithai/spec-check";
 import { inputError, usageError } from "./errors.js";
-import { buildSummary, renderSummaryMarkdown, type Summary } from "./summary.js";
+import { buildSummary, renderSummaryMarkdown, type ReleaseGateSummary, type Summary } from "./summary.js";
 import { toolVersions, type ToolName } from "./version.js";
 
 /** Step identifiers, as used by --skip. */
@@ -34,6 +34,8 @@ export interface RunOptions {
   openslo: string[];
   alertRules: string[];
   serviceGraph: string | null;
+  /** Product Check release gate to report; null reads `.product-check/release-gate.json` when it exists. */
+  releaseGate: string | null;
   skip: StepId[];
   branding: boolean;
   now?: () => Date;
@@ -105,6 +107,7 @@ export async function runCommons(options: RunOptions): Promise<RunResult> {
     options.runs,
     options.npmAudit,
     options.serviceGraph,
+    options.releaseGate,
     ...options.testResults,
     ...options.openslo,
     ...options.alertRules,
@@ -356,8 +359,20 @@ export async function runCommons(options: RunOptions): Promise<RunResult> {
     }
   }
 
+  // Product Check's release gate, when the owner has recorded one: read and reported, never evaluated here.
+  const gatePath =
+    options.releaseGate !== null
+      ? abs(options.releaseGate)
+      : join(cwd, ".product-check", "release-gate.json");
+  const productStep = steps.find((s) => s.id === "product" && s.status === "ok");
+  const releaseGate = existsSync(gatePath)
+    ? readReleaseGate(gatePath, rel(gatePath), scannedCommitOf(productStep?.report))
+    : null;
+  if (releaseGate) log(`product-check release gate: ${releaseGate.decision ?? releaseGate.status}`);
+
   const summary = buildSummary({
     steps,
+    releaseGate,
     repository: basename(cwd),
     stage: options.stage,
     base: options.base,
@@ -367,6 +382,66 @@ export async function runCommons(options: RunOptions): Promise<RunResult> {
   write("commons-summary.json", `${JSON.stringify(summary, null, 2)}\n`);
   write("SUMMARY.md", renderSummaryMarkdown(summary, { branding: options.branding }));
   return { steps, summary, outDir };
+}
+
+/** The commit Product Check assessed in step 5, from its results (read from .git by Product Check). */
+function scannedCommitOf(results: unknown): string | null {
+  const commit = (
+    results as { run?: { target_revision?: { repository?: { commit?: unknown } | null } } } | null
+  )?.run?.target_revision?.repository?.commit;
+  return typeof commit === "string" ? commit : null;
+}
+
+const asStrings = (v: unknown): string[] =>
+  Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+
+/** Reads a release-gate.json written by `product-check assure`/`gate`, validated against Product Check's schema. */
+export function readReleaseGate(
+  path: string,
+  file: string,
+  scannedCommit: string | null
+): ReleaseGateSummary {
+  const invalid = (reason: string): ReleaseGateSummary => ({
+    file,
+    status: "invalid",
+    reason,
+    decision: null,
+    product_verdict: null,
+    evaluated_at: null,
+    gate_commit: null,
+    scanned_commit: scannedCommit,
+    current: null,
+    blocking_reasons: [],
+    open_blocking: 0,
+  });
+  let doc: unknown;
+  try {
+    doc = JSON.parse(readFileSync(path, "utf8"));
+  } catch (error) {
+    return invalid(`Not readable JSON: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  const errors = productCheck.validateAgainst("release-gate.schema.json", doc);
+  const first = errors[0];
+  if (first !== undefined) {
+    return invalid(
+      `Does not match Product Check's release-gate schema (${errors.length} error(s); first: ${first.path || "/"} ${first.message})`
+    );
+  }
+  const gate = doc as Record<string, unknown>;
+  const gateCommit = typeof gate["head_sha"] === "string" ? gate["head_sha"] : null;
+  return {
+    file,
+    status: "read",
+    reason: null,
+    decision: String(gate["decision"]),
+    product_verdict: typeof gate["product_verdict"] === "string" ? gate["product_verdict"] : null,
+    evaluated_at: typeof gate["evaluated_at"] === "string" ? gate["evaluated_at"] : null,
+    gate_commit: gateCommit,
+    scanned_commit: scannedCommit,
+    current: gateCommit === null || scannedCommit === null ? null : gateCommit === scannedCommit,
+    blocking_reasons: asStrings(gate["blocking_reasons"]),
+    open_blocking: asStrings(gate["open_blocking_ids"]).length,
+  };
 }
 
 /** Product Check lifecycle stages accepted by --stage. */
