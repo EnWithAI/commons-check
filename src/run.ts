@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 EnWithAI Technologies
 /**
- * Runs the five Commons tools in order through their library APIs (docs/SPEC.md §4), writes each tool's outputs and
+ * Runs the six Commons tools in order through their library APIs (docs/SPEC.md §4), writes each tool's outputs and
  * collects what the summary needs. A step that cannot run is recorded as skipped or error; the others still run.
  * Nothing here starts a process or opens a connection.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import * as architectureCheck from "@enwithai/architecture-check";
+import * as blueprintCheck from "@enwithai/blueprint-check";
 import * as impactCheck from "@enwithai/impact-check";
 import * as outcomeCheck from "@enwithai/outcome-check";
 import * as productCheck from "@enwithai/product-check";
@@ -17,7 +18,7 @@ import { buildSummary, renderSummaryMarkdown, type ReleaseGateSummary, type Summ
 import { toolVersions, type ToolName } from "./version.js";
 
 /** Step identifiers, as used by --skip. */
-export const STEPS = ["spec", "impact", "architecture", "outcome", "product"] as const;
+export const STEPS = ["spec", "impact", "architecture", "outcome", "product", "blueprint"] as const;
 export type StepId = (typeof STEPS)[number];
 
 /** Options for one Commons Check run (see the CLI for defaults). */
@@ -68,6 +69,7 @@ const STEP_TOOL: Record<StepId, ToolName> = {
   architecture: "architecture-check",
   outcome: "outcome-check",
   product: "product-check",
+  blueprint: "blueprint-check",
 };
 
 /** An error thrown by one of the tools: message plus its exit code, when it has one. */
@@ -314,6 +316,7 @@ export async function runCommons(options: RunOptions): Promise<RunResult> {
   }
 
   // 5. Product Check, importing every report above that exists. Never given a URL: no network.
+  let productResults: string | null = null;
   if (skipped("product")) step("product", "skipped", "--skip product", [], null);
   else {
     try {
@@ -353,9 +356,27 @@ export async function runCommons(options: RunOptions): Promise<RunResult> {
       for (const packet of results.blueprint.work_packets)
         write(`product-check/work-packets/${packet.id}.md`, productCheck.renderPacket(results, packet));
       if (results.blueprint.work_packets.length > 0) outputs.push("product-check/work-packets/");
+      productResults = join(outDir, "product-check", "product-check-results.json");
       step("product", "ok", null, outputs, results);
     } catch (error) {
       step("product", "error", toolError(error).message, [], null);
+    }
+  }
+
+  // 6. Blueprint Check: the as-built architecture blueprint, from the module graph and Product Check's surface.
+  if (skipped("blueprint")) step("blueprint", "skipped", "--skip blueprint", [], null);
+  else {
+    try {
+      const blueprint = blueprintCheck.generate({
+        cwd,
+        graphPath: graphFile,
+        productCheckPath: productResults,
+        now,
+      });
+      blueprintCheck.writeBlueprint(blueprint, join(outDir, "blueprint"), { branding: options.branding });
+      step("blueprint", "ok", null, ["blueprint/"], blueprint.model);
+    } catch (error) {
+      step("blueprint", "error", toolError(error).message, [], null);
     }
   }
 

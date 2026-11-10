@@ -1,7 +1,7 @@
 {
   "name": "@enwithai/commons-check",
-  "version": "0.1.3",
-  "description": "One command for the EnWithAI Engineering Commons: runs Spec Check, Impact Check, Architecture Check, Outcome Check and Product Check on a repository, wires their outputs together and writes one summary. Offline, in-process, report only.",
+  "version": "0.2.0",
+  "description": "One command for the EnWithAI Engineering Commons: runs Spec Check, Impact Check, Architecture Check, Outcome Check, Product Check and Blueprint Check on a repository, wires their outputs together, draws the architecture blueprint and writes one summary. Offline, in-process, report only.",
   "license": "MIT",
   "author": "EnWithAI Technologies",
   "homepage": "https://github.com/enwithai/commons-check#readme",
@@ -42,7 +42,8 @@
     "impact-check",
     "architecture-check",
     "product-check",
-    "developer-tools"
+    "developer-tools",
+    "blueprint-check"
   ],
   "scripts": {
     "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json && node scripts/postbuild.mjs",
@@ -56,6 +57,7 @@
   },
   "dependencies": {
     "@enwithai/architecture-check": "0.2.1",
+    "@enwithai/blueprint-check": "0.1.0",
     "@enwithai/impact-check": "0.3.0",
     "@enwithai/outcome-check": "0.2.0",
     "@enwithai/product-check": "0.3.0",

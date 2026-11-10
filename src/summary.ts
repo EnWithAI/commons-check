@@ -67,6 +67,15 @@ export interface ReleaseGateSummary {
   open_blocking: number;
 }
 
+/** Blueprint Check's part of the summary. */
+export interface BlueprintSummary {
+  overall_status: string;
+  views: Record<string, number>;
+  elements: number;
+  relationships: number;
+  gaps_high: number;
+}
+
 /** One recommended action. */
 export interface Action {
   source: string;
@@ -90,6 +99,7 @@ export interface Summary {
   product: ProductSummary | null;
   release_gate: ReleaseGateSummary | null;
   outcome: { id: string; title: string; value: number | null; unit: string; reason: string | null }[] | null;
+  blueprint: BlueprintSummary | null;
   actions: Action[];
   needs_confirmation: number;
   errors: number;
@@ -170,6 +180,7 @@ export function buildSummary(input: SummaryInput): Summary {
   const productStep = input.steps.find((s) => s.id === "product" && s.status === "ok");
   const product = productStep ? productSummary(productStep.report) : null;
   const outcomeStep = input.steps.find((s) => s.id === "outcome" && s.status === "ok");
+  const blueprintStep = input.steps.find((s) => s.id === "blueprint" && s.status === "ok");
 
   // What to do first: facts only, Product Check P0/P1 before verified high, then verified medium.
   const actions: Action[] = [];
@@ -216,6 +227,7 @@ export function buildSummary(input: SummaryInput): Summary {
     product,
     release_gate: input.releaseGate ?? null,
     outcome: outcomeStep ? outcomeSummary(outcomeStep.report) : null,
+    blueprint: blueprintStep ? blueprintSummary(blueprintStep.report) : null,
     actions: actions.slice(0, 5),
     needs_confirmation: input.steps
       .filter((s) => STATIC_STEPS.has(s.id))
@@ -258,6 +270,19 @@ function productSummary(report: unknown): ProductSummary | null {
       : {},
     not_tested: listed("NOT_TESTED"),
     blocked: listed("BLOCKED"),
+  };
+}
+
+function blueprintSummary(report: unknown): BlueprintSummary | null {
+  if (!isObj(report) || !Array.isArray(report["catalog"])) return null;
+  const list = (key: string): Record<string, unknown>[] =>
+    Array.isArray(report[key]) ? (report[key] as Record<string, unknown>[]) : [];
+  return {
+    overall_status: String(report["overall_status"]),
+    views: count(list("catalog").map((c) => String(c["status"]))),
+    elements: list("components").length + list("data_stores").length,
+    relationships: list("relationships").length,
+    gaps_high: list("gaps").filter((g) => g["criticality"] === "high").length,
   };
 }
 
@@ -383,6 +408,15 @@ export function renderSummaryMarkdown(s: Summary, options: { branding: boolean }
         `- ${escapeMd(m.title)}: ${m.value === null ? `withheld${m.reason ? ` (${escapeMd(m.reason)})` : ""}` : fmtValue(m.value, m.unit)}`
       );
     out.push("");
+  }
+
+  if (s.blueprint) {
+    const b = s.blueprint;
+    out.push(`## Blueprint Check: ${escapeMd(b.overall_status)}`, "");
+    out.push(
+      `${b.elements} elements and ${b.relationships} relationships, each linked to evidence. Views: ${["produced", "partial", "blocked", "not_applicable"].map((k) => `${k.replace("_", " ")} ${b.views[k] ?? 0}`).join(" · ")}. ${b.gaps_high} high-criticality gap(s) need a person (journeys, trust enforcement). Open ${code("blueprint/ARCHITECTURE_BLUEPRINT.md")}; commit ${code("blueprint/workspace.dsl")} as ${code("architecture/workspace.dsl")} so Architecture Check guards it.`,
+      ""
+    );
   }
 
   for (const st of s.steps.filter((x) => x.top.length > 0)) {

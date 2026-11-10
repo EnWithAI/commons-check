@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-Run the five EnWithAI Engineering Commons tools on one repository with **one command**, in the right order, wire
+Run the six EnWithAI Engineering Commons tools on one repository with **one command**, in the right order, wire
 their outputs into each other, and write **one summary**. Commons Check adds no rules, no score and no judgement of
 its own. Every finding, status and verdict comes from the tool that produced it, unchanged.
 
@@ -13,6 +13,7 @@ its own. Every finding, status and verdict comes from the tool that produced it,
 | 3    | Architecture Check 0.2.1            | Does the architecture model still describe the code?   |
 | 4    | Outcome Check 0.2.0 (optional)      | What did delivery achieve? (needs exported PR/CI data) |
 | 5    | Product Check 0.3.0                 | Does the product work, can it be trusted?              |
+| 6    | Blueprint Check 0.1.0               | What is the as-built architecture?                     |
 
 ## 2. Invariants
 
@@ -87,6 +88,11 @@ Each step's configuration file is used when present: `.spec-check.json`, `.impac
 
 Then `SUMMARY.md` and `commons-summary.json` are written to the output directory.
 
+Step 6, Blueprint Check, runs last: it calls `generate` with the module graph from step 2 and Product Check's results
+from step 5 (when they exist) and writes the blueprint package to `blueprint/` in the output directory. Its status is
+`ok` or `error`; `--skip blueprint` skips it. The summary carries `blueprint` (overall status, view counts, elements,
+relationships and high-criticality gaps). `blueprint/workspace.dsl` is the model to commit for Architecture Check.
+
 ## 5. Summary
 
 `commons-summary.json` (`schema_version` "1.0", kind `commons-summary`) and `SUMMARY.md` contain the following:
@@ -133,15 +139,16 @@ Paths in the summary are relative to `--cwd`. Repository-derived text is escaped
 
 ## 7. Versions
 
-Commons Check `0.1.3` pins Spec Check 0.2.0, Impact Check 0.3.0, Outcome Check 0.2.0, Architecture Check 0.2.1 and
-Product Check 0.3.0 exactly. A new tool release reaches users through a new Commons Check release. The summary
+Commons Check `0.2.0` pins Spec Check 0.2.0, Impact Check 0.3.0, Outcome Check 0.2.0, Architecture Check 0.2.1,
+Product Check 0.3.0 and Blueprint Check 0.1.0 exactly. A new tool release reaches users through a new Commons Check release. The summary
 schema has its own `schema_version`.
 
 ## 8. Expected cases (tests are written first)
 
 - **Synthetic repository**, a git repo built in the test with a spec, a model, code, a branch change and test
   results:
-  - all five steps `ok`;
+  - all six steps `ok`;
+  - Blueprint Check wrote `blueprint/` from the graph and Product Check's results;
   - every output file written;
   - Product Check imported all four reports;
   - the summary lists top findings with `path:line`, the verdict, the pillars and NOT_TESTED reasons;

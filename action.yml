@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2026 EnWithAI Technologies
-# Commons Check composite GitHub Action: runs the five Engineering Commons tools on the checked-out repository,
+# Commons Check composite GitHub Action: runs the six Engineering Commons tools on the checked-out repository,
 # writes every report to an output directory and the summary to the job summary. Security model in docs/ACTION.md.
 
 name: "Engineering Commons check"
-description: "Runs Spec Check, Impact Check, Architecture Check, Outcome Check and Product Check in one step and summarizes them. Offline, in-process, report only."
+description: "Runs Spec Check, Impact Check, Architecture Check, Outcome Check, Product Check and Blueprint Check in one step and summarizes them. Offline, in-process, report only."
 author: "EnWithAI Technologies"
 branding:
   icon: "check-square"
@@ -13,7 +13,7 @@ branding:
 # Security model (see docs/ACTION.md):
 # - Use on `pull_request` with `permissions: contents: read`. Do not use `pull_request_target`.
 # - Check out with `fetch-depth: 0` so Impact Check can compare with the base branch.
-# - The runtime dependencies (the five tools) are installed from the pinned lockfile with
+# - The runtime dependencies (the six tools) are installed from the pinned lockfile with
 #   `npm ci --omit=dev --ignore-scripts` (this step contacts the npm registry); the checks make no network access.
 # - Inputs are passed through environment variables, never interpolated into shell code.
 inputs:

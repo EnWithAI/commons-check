@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 EnWithAI Technologies
 /**
- * Command-line interface (docs/SPEC.md §3): parses arguments, runs the five steps and maps errors to exit codes.
+ * Command-line interface (docs/SPEC.md §3): parses arguments, runs the six steps and maps errors to exit codes.
  * Findings never change the exit code.
  */
 import { existsSync, statSync } from "node:fs";
@@ -28,8 +28,10 @@ Usage:
   commons-check --help | --version
 
 Runs, in order and in-process: Spec Check → Impact Check (+ module graph) → Architecture Check →
-Outcome Check (with --prs) → Product Check, which imports the reports above. Writes every report plus
-SUMMARY.md and commons-summary.json to the output directory. Report only: findings never fail the run.
+Outcome Check (with --prs) → Product Check, which imports the reports above → Blueprint Check, which draws the
+as-built architecture blueprint from the module graph and Product Check's surface. Writes every report, the
+blueprint/ folder, SUMMARY.md and commons-summary.json to the output directory. Report only: findings never fail
+the run.
 
 Options:
   --cwd <dir>               Repository root (default: current directory)
