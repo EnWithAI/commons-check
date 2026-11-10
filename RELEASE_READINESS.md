@@ -1,4 +1,19 @@
-# Release readiness — Commons Check 0.2.0
+# Release readiness — Commons Check 0.3.261110 (version alignment)
+
+Date: 2026-11-10 · Branch `release/0.3.261110` · **Verdict: RELEASE APPROVED** by the user on 2026-11-10. Every
+Engineering Commons tool moves to `0.3.YYMMDD`; no functional change.
+
+| Check                    | Result                                                                                                                           |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Pins                     | all six tools at 0.3.261110 from the registry; one Architecture Check in the tree (deduped)                                      |
+| Full gate                | `npm run check:all`: 4 files / 17 tests passed; lines 95.5%                                                                      |
+| Licenses / audit         | production 51 packages (MIT 46, ISC 4, Apache-2.0 1), 0 disallowed; `npm audit --omit=dev` 0                                     |
+| Package                  | 28 files; local pack shasum `c6305335961d6a2741d632992018826353f0ddd3` (from this branch, no tag)                                |
+| Clean install, real data | packed 0.3.261110 on the outcome-check repository: every step reports its tool at 0.3.261110; blueprint ok; repository untouched |
+
+---
+
+# Release readiness — Commons Check 0.2.0 (history)
 
 Date: 2026-11-10 · Branch `release/0.2.0` · **Verdict: RELEASE APPROVED** by the user on 2026-11-10 (tag, GitHub
 release; npm publish by the user with 2FA).

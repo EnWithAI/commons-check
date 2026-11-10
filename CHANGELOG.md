@@ -5,6 +5,14 @@ versions may change the summary format, which carries its own `schema_version`).
 
 ## Unreleased
 
+## 0.3.261110 — 2026-11-10
+
+- Version alignment: every EnWithAI Engineering Commons tool now uses `0.3.YYMMDD`, the date of the release
+  (`0.3.261110` = 2026-11-10). It continues from `0.2.0`. No functional change; report and schema versions are
+  unchanged.
+- Pins every tool at 0.3.261110: Spec Check, Impact Check, Architecture Check, Outcome Check, Product Check and
+  Blueprint Check (same code as the previous pins).
+
 ## 0.2.0 — 2026-11-10
 
 - Step 6: Blueprint Check 0.1.0 generates the as-built architecture blueprint (dossier, Mermaid views, model,
