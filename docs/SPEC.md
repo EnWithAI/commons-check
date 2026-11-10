@@ -6,14 +6,14 @@ Run the six EnWithAI Engineering Commons tools on one repository with **one comm
 their outputs into each other, and write **one summary**. Commons Check adds no rules, no score and no judgement of
 its own. Every finding, status and verdict comes from the tool that produced it, unchanged.
 
-| Step | Tool (pinned)                       | Question                                               |
-| ---- | ----------------------------------- | ------------------------------------------------------ |
-| 1    | Spec Check 0.2.0                    | Are the requirements clear enough to build from?       |
-| 2    | Impact Check 0.3.0 (+ module graph) | What does this change affect?                          |
-| 3    | Architecture Check 0.2.1            | Does the architecture model still describe the code?   |
-| 4    | Outcome Check 0.2.0 (optional)      | What did delivery achieve? (needs exported PR/CI data) |
-| 5    | Product Check 0.3.0                 | Does the product work, can it be trusted?              |
-| 6    | Blueprint Check 0.1.0               | What is the as-built architecture?                     |
+| Step | Tool (pinned)                            | Question                                               |
+| ---- | ---------------------------------------- | ------------------------------------------------------ |
+| 1    | Spec Check 0.3.261110                    | Are the requirements clear enough to build from?       |
+| 2    | Impact Check 0.3.261110 (+ module graph) | What does this change affect?                          |
+| 3    | Architecture Check 0.3.261110            | Does the architecture model still describe the code?   |
+| 4    | Outcome Check 0.3.261110 (optional)      | What did delivery achieve? (needs exported PR/CI data) |
+| 5    | Product Check 0.3.261110                 | Does the product work, can it be trusted?              |
+| 6    | Blueprint Check 0.3.261110               | What is the as-built architecture?                     |
 
 ## 2. Invariants
 
@@ -139,8 +139,8 @@ Paths in the summary are relative to `--cwd`. Repository-derived text is escaped
 
 ## 7. Versions
 
-Commons Check `0.2.0` pins Spec Check 0.2.0, Impact Check 0.3.0, Outcome Check 0.2.0, Architecture Check 0.2.1,
-Product Check 0.3.0 and Blueprint Check 0.1.0 exactly. A new tool release reaches users through a new Commons Check release. The summary
+Commons Check `0.3.261110` pins Spec Check, Impact Check, Outcome Check, Architecture Check, Product Check and
+Blueprint Check exactly, all at 0.3.261110 (the shared `0.3.YYMMDD` scheme). A new tool release reaches users through a new Commons Check release. The summary
 schema has its own `schema_version`.
 
 ## 8. Expected cases (tests are written first)
